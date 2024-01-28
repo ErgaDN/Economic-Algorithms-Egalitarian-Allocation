@@ -20,33 +20,40 @@ def egalitarian_allocation(valuations: list[list[float]]):
                   Player 1 gets items  2, with utility 30
                   Player 2 gets items  0, with utility 35
               """
+
+    # Determine the number of players and objects
     num_of_players = len(valuations)
     num_of_objects = len(valuations[0])
+
+    # Declare decision variables
     variables = cp.Variable((num_of_players, num_of_objects), boolean=True)
     utility_for_player = [0] * num_of_players
 
-    # insert values to utility_for_player
+    # Calculate utility for each player
     for i in range(num_of_players):
         utility = sum(variables[i, j] * valuations[i][j] for j in range(num_of_objects))
         utility_for_player[i] = utility
 
+    # Declare optimization variables
     min_utility = cp.Variable()
-
     constraints = [min_utility <= utility_for_player[i] for i in range(num_of_players)]
 
+    # Add constraints to ensure each object is allocated to exactly one player
     for j in range(num_of_objects):
         constraint = sum(variables[i][j] for i in range(num_of_players)) == 1
         constraints.append(constraint)
 
+    # Formulate the optimization problem
     obj = cp.Maximize(min_utility)
     prob = cp.Problem(obj, constraints)
+
+    # Solve the optimization problem
     prob.solve()
 
     # print the result
     for i in range(num_of_players):
         print(f"Player {i} gets items ", end=" ")
         for j in range(num_of_objects):
-            # print(i, j, variables[i][j].value)
             if variables[i][j].value > 0.5:
                 print(j, end=", ")
         print(f"with utility {int(utility_for_player[i].value)}")
