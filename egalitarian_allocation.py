@@ -50,13 +50,13 @@ def egalitarian_allocation(valuations: list[list[float]]):
     # Solve the optimization problem
     prob.solve()
 
-    # print the result
-    for i in range(num_of_players):
-        print(f"Player {i} gets items ", end=" ")
-        for j in range(num_of_objects):
-            if variables[i][j].value > 0.5:
-                print(j, end=", ")
-        print(f"with utility {int(utility_for_player[i].value)}")
+    # # print the result
+    # for i in range(num_of_players):
+    #     print(f"Player {i} gets items ", end=" ")
+    #     for j in range(num_of_objects):
+    #         if variables[i][j].value > 0.5:
+    #             print(j, end=", ")
+    #     print(f"with utility {int(utility_for_player[i].value)}")
 
 
 if __name__ == "__main__":
