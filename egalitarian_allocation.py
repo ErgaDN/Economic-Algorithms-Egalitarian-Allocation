@@ -19,6 +19,12 @@ def egalitarian_allocation(valuations: list[list[float]]):
                   Player 0 gets items  1, with utility 20
                   Player 1 gets items  2, with utility 30
                   Player 2 gets items  0, with utility 35
+
+                  >>> egalitarian_allocation(valuations=[[40, 20, 30, 10], [10, 60, 10, 30], [20, 30, 70, 60], [50, 10, 40, 80]])
+                  Player 0 gets items  0, with utility 40
+                  Player 1 gets items  1, with utility 60
+                  Player 2 gets items  2, with utility 70
+                  Player 3 gets items  3, with utility 80
               """
 
     # Determine the number of players and objects
@@ -50,13 +56,13 @@ def egalitarian_allocation(valuations: list[list[float]]):
     # Solve the optimization problem
     prob.solve()
 
-    # # print the result
-    # for i in range(num_of_players):
-    #     print(f"Player {i} gets items ", end=" ")
-    #     for j in range(num_of_objects):
-    #         if variables[i][j].value > 0.5:
-    #             print(j, end=", ")
-    #     print(f"with utility {int(utility_for_player[i].value)}")
+    # print the result
+    for i in range(num_of_players):
+        print(f"Player {i} gets items ", end=" ")
+        for j in range(num_of_objects):
+            if variables[i][j].value > 0.5:
+                print(j, end=", ")
+        print(f"with utility {int(utility_for_player[i].value)}")
 
 
 if __name__ == "__main__":
@@ -67,3 +73,5 @@ if __name__ == "__main__":
     # egalitarian_allocation([[11, 11, 55], [22, 22, 33], [33, 44, 0]])
     #
     # egalitarian_allocation([[10, 20, 30], [10, 20, 30], [35, 50, 5]])
+    #
+    # egalitarian_allocation([[40, 20, 30, 10], [10, 60, 10, 30], [20, 30, 70, 60], [50, 10, 40, 80]])
