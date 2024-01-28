@@ -1,7 +1,25 @@
 import cvxpy as cp
 import doctest
 
+
 def egalitarian_allocation(valuations: list[list[float]]):
+    """
+              Examples:
+                  >>> egalitarian_allocation(valuations=[[11, 11, 22, 33, 44], [11, 22, 44, 55, 66], [11, 33, 22, 11, 66]])
+                  Player 0 gets items  0, 4, with utility 55
+                  Player 1 gets items  3, with utility 55
+                  Player 2 gets items  1, 2, with utility 55
+
+                  >>> egalitarian_allocation(valuations=[[11, 11, 55], [22, 22, 33], [33, 44, 0]])
+                  Player 0 gets items  2, with utility 55
+                  Player 1 gets items  0, with utility 22
+                  Player 2 gets items  1, with utility 44
+
+                  >>> egalitarian_allocation(valuations=[[10, 20, 30], [10, 20, 30], [35, 50, 5]])
+                  Player 0 gets items  1, with utility 20
+                  Player 1 gets items  2, with utility 30
+                  Player 2 gets items  0, with utility 35
+              """
     num_of_players = len(valuations)
     num_of_objects = len(valuations[0])
     variables = cp.Variable((num_of_players, num_of_objects), boolean=True)
@@ -31,12 +49,14 @@ def egalitarian_allocation(valuations: list[list[float]]):
             # print(i, j, variables[i][j].value)
             if variables[i][j].value > 0.5:
                 print(j, end=", ")
-        print(f"with utility {round(utility_for_player[i].value, 2)}")
+        print(f"with utility {int(utility_for_player[i].value)}")
 
 
 if __name__ == "__main__":
     doctest.testmod()
-    egalitarian_allocation(
-        valuations=[[11, 11, 22, 33, 44], [11, 22, 44, 55, 66], [11, 33, 22, 11, 66]])
 
-
+    # egalitarian_allocation([[11, 11, 22, 33, 44], [11, 22, 44, 55, 66], [11, 33, 22, 11, 66]])
+    #
+    # egalitarian_allocation([[11, 11, 55], [22, 22, 33], [33, 44, 0]])
+    #
+    # egalitarian_allocation([[10, 20, 30], [10, 20, 30], [35, 50, 5]])
