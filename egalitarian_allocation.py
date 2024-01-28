@@ -1,16 +1,42 @@
-# This is a sample Python script.
+import cvxpy as cp
+import doctest
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def egalitarian_allocation(valuations: list[list[float]]):
+    num_of_players = len(valuations)
+    num_of_objects = len(valuations[0])
+    variables = cp.Variable((num_of_players, num_of_objects), boolean=True)
+    utility_for_player = [0] * num_of_players
+
+    # insert values to utility_for_player
+    for i in range(num_of_players):
+        utility = sum(variables[i, j] * valuations[i][j] for j in range(num_of_objects))
+        utility_for_player[i] = utility
+
+    min_utility = cp.Variable()
+
+    constraints = [min_utility <= utility_for_player[i] for i in range(num_of_players)]
+
+    for j in range(num_of_objects):
+        constraint = sum(variables[i][j] for i in range(num_of_players)) == 1
+        constraints.append(constraint)
+
+    obj = cp.Maximize(min_utility)
+    prob = cp.Problem(obj, constraints)
+    prob.solve()
+
+    # print the result
+    for i in range(num_of_players):
+        print(f"Player {i} gets items ", end=" ")
+        for j in range(num_of_objects):
+            # print(i, j, variables[i][j].value)
+            if variables[i][j].value > 0.5:
+                print(j, end=", ")
+        print(f"with utility {round(utility_for_player[i].value, 2)}")
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+if __name__ == "__main__":
+    doctest.testmod()
+    egalitarian_allocation(
+        valuations=[[11, 11, 22, 33, 44], [11, 22, 44, 55, 66], [11, 33, 22, 11, 66]])
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
